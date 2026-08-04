@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SkyBook — Where to next?</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<nav class="navbar">
+  <div class="container">
+    <a href="home.html" class="brand">
+      <svg class="mark" viewBox="0 0 32 32" fill="none"><path d="M4 20 L28 12 M28 12 L20 12 M28 12 L23 19" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      SkyBook
+    </a>
+    <div class="nav-links">
+      <a href="home.html" class="active">Home</a>
+      <a href="search.html">Flights</a>
+      <a href="booking.html">My booking</a>
+      <a href="login.html" data-auth-slot class="nav-cta">Sign in</a>
+    </div>
+  </div>
+</nav>
+
+<header class="hero">
+  <svg class="flight-path" viewBox="0 0 1200 500" preserveAspectRatio="none">
+    <path d="M -50,320 C 250,120 650,420 1250,140"/>
+    <circle class="plane" r="4" fill="#E0BB6B"/>
+  </svg>
+
+  <div class="container">
+    <div class="hero-content">
+      <span class="eyebrow">Flights · 128 destinations</span>
+      <h1>Where to <em>next?</em></h1>
+      <p class="lead">Search real-time fares across 40+ airlines, lock in a seat, and get your boarding pass in one flow — no detours, no fine print surprises.</p>
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="search-widget">
+      <div class="trip-toggle" role="tablist" aria-label="Trip type">
+        <button type="button" class="active" data-trip="round">Round trip</button>
+        <button type="button" data-trip="one">One way</button>
+      </div>
+
+      <form id="home-search-form" class="search-grid">
+        <div class="field">
+          <label for="from">From</label>
+          <select id="from" required>
+            <option value="DEL">Delhi (DEL)</option>
+            <option value="BOM">Mumbai (BOM)</option>
+            <option value="BLR">Bengaluru (BLR)</option>
+            <option value="MAA" selected>Chennai (MAA)</option>
+            <option value="CCU">Kolkata (CCU)</option>
+            <option value="HYD">Hyderabad (HYD)</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="to">To</label>
+          <select id="to" required>
+            <option value="BOM">Mumbai (BOM)</option>
+            <option value="DEL">Delhi (DEL)</option>
+            <option value="SIN" selected>Singapore (SIN)</option>
+            <option value="DXB">Dubai (DXB)</option>
+            <option value="LHR">London (LHR)</option>
+            <option value="NRT">Tokyo (NRT)</option>
+            <option value="BKK">Bangkok (BKK)</option>
+            <option value="CDG">Paris (CDG)</option>
+            <option value="JFK">New York (JFK)</option>
+            <option value="SYD">Sydney (SYD)</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="depart">Depart</label>
+          <input type="date" id="depart" required>
+        </div>
+        <div class="field">
+          <label for="passengers">Passengers</label>
+          <select id="passengers">
+            <option value="1">1 Adult</option>
+            <option value="2">2 Adults</option>
+            <option value="3">3 Adults</option>
+            <option value="4">4 Adults</option>
+          </select>
+        </div>
+        <button type="submit" class="btn btn-primary">Search flights</button>
+      </form>
+    </div>
+
+    <div class="stat-strip">
+      <div class="stat"><div class="num">128</div><div class="label">Destinations served</div></div>
+      <div class="stat"><div class="num">40+</div><div class="label">Partner airlines</div></div>
+      <div class="stat"><div class="num">2.1M</div><div class="label">Trips booked this year</div></div>
+      <div class="stat"><div class="num">4.8/5</div><div class="label">Average traveler rating</div></div>
+    </div>
+  </div>
+</header>
+
+<section class="section">
+  <div class="container">
+    <div class="section-head">
+      <h2>Popular this month</h2>
+      <p>Fares shift by the hour — these routes are trending with SkyBook travelers right now.</p>
+    </div>
+    <div class="dest-grid">
+      <a class="dest-card" style="--c1:#2A4373;--c2:#0B1D3A" href="search.html?from=MAA&to=SIN">
+        <img src="https://images.unsplash.com/photo-1744705221117-9c726f9497b0?w=900&q=70&auto=format&fit=crop" alt="Singapore skyline" loading="lazy">
+        <span class="code">MAA → SIN</span>
+        <div class="info"><div class="city">Singapore</div><div class="price">from ₹25,900</div></div>
+      </a>
+      <a class="dest-card" style="--c1:#5A3A2A;--c2:#0B1D3A" href="search.html?from=DEL&to=DXB">
+        <img src="https://images.unsplash.com/photo-1748373448914-1d7f882700e2?w=900&q=70&auto=format&fit=crop" alt="Dubai skyline with Burj Khalifa" loading="lazy">
+        <span class="code">DEL → DXB</span>
+        <div class="info"><div class="city">Dubai</div><div class="price">from ₹16,400</div></div>
+      </a>
+      <a class="dest-card" style="--c1:#1E3565;--c2:#16294F" href="search.html?from=BOM&to=LHR">
+        <img src="https://images.unsplash.com/photo-1745797967896-4919406ff5e2?w=900&q=70&auto=format&fit=crop" alt="London city skyline" loading="lazy">
+        <span class="code">BOM → LHR</span>
+        <div class="info"><div class="city">London</div><div class="price">from ₹44,900</div></div>
+      </a>
+      <a class="dest-card" style="--c1:#3A2A5A;--c2:#0B1D3A" href="search.html?from=BLR&to=NRT">
+        <img src="https://images.unsplash.com/photo-1759970752518-b0ffa38c130b?w=900&q=70&auto=format&fit=crop" alt="Tokyo skyline at night" loading="lazy">
+        <span class="code">BLR → NRT</span>
+        <div class="info"><div class="city">Tokyo</div><div class="price">from ₹40,300</div></div>
+      </a>
+      <a class="dest-card" style="--c1:#2F5233;--c2:#0B1D3A" href="search.html?from=HYD&to=BKK">
+        <img src="https://images.unsplash.com/photo-1704872656367-aab145fdee7f?w=900&q=70&auto=format&fit=crop" alt="Bangkok skyline on the river" loading="lazy">
+        <span class="code">HYD → BKK</span>
+        <div class="info"><div class="city">Bangkok</div><div class="price">from ₹12,500</div></div>
+      </a>
+      <a class="dest-card" style="--c1:#5A2A4A;--c2:#0B1D3A" href="search.html?from=CCU&to=CDG">
+        <img src="https://images.unsplash.com/photo-1681311869080-8609bc510c29?w=900&q=70&auto=format&fit=crop" alt="Eiffel Tower over Paris" loading="lazy">
+        <span class="code">CCU → CDG</span>
+        <div class="info"><div class="city">Paris</div><div class="price">from ₹52,000</div></div>
+      </a>
+      <a class="dest-card" style="--c1:#274060;--c2:#0B1D3A" href="search.html?from=MAA&to=JFK">
+        <img src="https://images.unsplash.com/photo-1764782979306-1e489462d895?w=900&q=70&auto=format&fit=crop" alt="New York City skyline at dusk" loading="lazy">
+        <span class="code">MAA → JFK</span>
+        <div class="info"><div class="city">New York</div><div class="price">from ₹68,000</div></div>
+      </a>
+      <a class="dest-card" style="--c1:#1E4A5A;--c2:#0B1D3A" href="search.html?from=DEL&to=SYD">
+        <img src="https://images.unsplash.com/photo-1751157462805-2e88f0c6bb1a?w=900&q=70&auto=format&fit=crop" alt="Sydney Opera House and skyline" loading="lazy">
+        <span class="code">DEL → SYD</span>
+        <div class="info"><div class="city">Sydney</div><div class="price">from ₹58,000</div></div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<section class="section" style="padding-top:0">
+  <div class="container">
+    <div class="section-head">
+      <h2>How booking works</h2>
+      <p>Three steps, start to boarding pass.</p>
+    </div>
+    <div class="how-grid">
+      <div class="how-step">
+        <span class="tag">Step 1</span>
+        <h3>Search your route</h3>
+        <p>Tell us where and when — we compare fares across every partner airline in seconds.</p>
+      </div>
+      <div class="how-step">
+        <span class="tag">Step 2</span>
+        <h3>Pick a seat</h3>
+        <p>Choose your flight, select a seat from the live map, and add passenger details.</p>
+      </div>
+      <div class="how-step">
+        <span class="tag">Step 3</span>
+        <h3>Get your pass</h3>
+        <p>Confirm payment and your e-boarding pass is ready to download or email instantly.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="container">
+    <div>
+      <div class="footer-brand">SkyBook</div>
+      <small>Demo project — not a real booking service.</small>
+    </div>
+    <div>
+      <small>&copy; 2026 SkyBook · Built as a student project</small>
+    </div>
+  </div>
+</footer>
+
+<script src="script.js"></script>
+<script>
+  // Default the date input to two weeks out, min = today
+  const departInput = document.getElementById("depart");
+  const today = new Date();
+  const twoWeeks = new Date(today.getTime() + 14 * 86400000);
+  departInput.min = today.toISOString().slice(0, 10);
+  departInput.value = twoWeeks.toISOString().slice(0, 10);
+
+  // Trip type toggle (visual only for this demo)
+  document.querySelectorAll(".trip-toggle button").forEach(btn => {
+    btn.addEventListener("click", () => {
+      document.querySelectorAll(".trip-toggle button").forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+    });
+  });
+
+  document.getElementById("home-search-form").addEventListener("submit", (e) => {
+    e.preventDefault();
+    const from = document.getElementById("from").value;
+    const to = document.getElementById("to").value;
+    const date = document.getElementById("depart").value;
+    const passengers = document.getElementById("passengers").value;
+    const params = new URLSearchParams({ from, to, date, passengers });
+    window.location.href = `search.html?${params.toString()}`;
+  });
+
+  // Prefill from destination card query params, if arrived that way
+  const urlParams = new URLSearchParams(window.location.search);
+  if (urlParams.get("from")) document.getElementById("from").value = urlParams.get("from");
+  if (urlParams.get("to")) document.getElementById("to").value = urlParams.get("to");
+</script>
+</body>
+</html>

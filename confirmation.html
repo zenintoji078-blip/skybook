@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Booking confirmed — SkyBook</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<nav class="navbar">
+  <div class="container">
+    <a href="home.html" class="brand">
+      <svg class="mark" viewBox="0 0 32 32" fill="none"><path d="M4 20 L28 12 M28 12 L20 12 M28 12 L23 19" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      SkyBook
+    </a>
+    <div class="nav-links">
+      <a href="home.html">Home</a>
+      <a href="search.html">Flights</a>
+      <a href="booking.html">My booking</a>
+      <a href="login.html" data-auth-slot class="nav-cta">Sign in</a>
+    </div>
+  </div>
+</nav>
+
+<div class="container">
+  <div class="steps-bar">
+    <div class="step done">1 · Search</div>
+    <div class="step done">2 · Seat &amp; details</div>
+    <div class="step active">3 · Confirmation</div>
+  </div>
+</div>
+
+<section class="confirm-hero">
+  <div class="container">
+    <div class="check-badge">
+      <svg width="30" height="30" viewBox="0 0 24 24" fill="none"><path d="M4 12 L10 18 L20 6" stroke="#C9A24B" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </div>
+    <span class="eyebrow">Payment successful</span>
+    <h1 style="font-size:clamp(1.8rem,4vw,2.6rem); margin-top:12px;">You're booked, <span id="hero-name">traveler</span>.</h1>
+    <p style="color:var(--slate); margin-top:12px;">Your e-boarding pass is below — save it or check in online 24 hours before departure.</p>
+  </div>
+</section>
+
+<div class="container">
+  <div class="boarding-pass" id="boarding-pass">
+    <span class="hole top"></span><span class="hole bottom"></span>
+    <div class="bp-main">
+      <div class="bp-top">
+        <div class="airline" id="bp-airline">Airline</div>
+        <div class="pnr">PNR <span id="bp-pnr">——————</span></div>
+      </div>
+
+      <div class="bp-route">
+        <div>
+          <div class="city" id="bp-from-city">MAA</div>
+          <div class="code" id="bp-from-code">Chennai</div>
+        </div>
+        <svg class="plane-icon" viewBox="0 0 24 24" fill="none"><path d="M2 12 L22 12 M22 12 L16 6 M22 12 L16 18" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <div>
+          <div class="city" id="bp-to-city">SIN</div>
+          <div class="code" id="bp-to-code">Singapore</div>
+        </div>
+      </div>
+
+      <div class="bp-grid">
+        <div class="item"><div class="k">Passenger</div><div class="v" id="bp-passenger">—</div></div>
+        <div class="item"><div class="k">Flight</div><div class="v" id="bp-flightno">—</div></div>
+        <div class="item"><div class="k">Date</div><div class="v" id="bp-date">—</div></div>
+        <div class="item"><div class="k">Seat</div><div class="v" id="bp-seat">—</div></div>
+      </div>
+    </div>
+
+    <div class="bp-stub">
+      <div>
+        <div class="k">Boarding</div>
+        <div class="v" id="bp-boarding">—</div>
+      </div>
+      <div>
+        <div class="k">Gate</div>
+        <div class="v" id="bp-gate">—</div>
+      </div>
+      <div>
+        <div class="k">Total paid</div>
+        <div class="v" id="bp-total">—</div>
+      </div>
+      <div class="bp-barcode" id="bp-barcode"></div>
+    </div>
+  </div>
+
+  <div class="confirm-actions">
+    <button type="button" class="btn btn-dark" id="print-pass-btn" onclick="printBoardingPass()">Print / download boarding pass</button>
+    <button type="button" class="btn btn-primary" id="print-receipt-btn" onclick="printReceipt()" style="display:none;">Print / download receipt</button>
+    <a href="home.html" class="btn btn-ghost" style="border-color:var(--cloud-dim); color:var(--ink);">Back to home</a>
+  </div>
+  <p id="print-confirm-msg" style="display:none; text-align:center; color:var(--success); font-size:0.9rem; margin-top:14px;">
+    ✓ Boarding pass sent to your printer — choose "Save as PDF" to download it. Your receipt button is ready above.
+  </p>
+  <p id="print-confirm-msg-2" style="display:none; text-align:center; color:var(--success); font-size:0.9rem; margin-top:14px;">
+    ✓ Receipt sent to your printer — choose "Save as PDF" in the print dialog to download it.
+  </p>
+
+  <div class="receipt-card" id="receipt-card">
+    <div class="receipt-head">
+      <div>
+        <div class="receipt-title">Payment receipt</div>
+        <div class="receipt-sub">Receipt No. <span id="rc-number">—</span></div>
+      </div>
+      <div class="receipt-sub" id="rc-date">—</div>
+    </div>
+    <hr class="summary-divider" style="border-top-color: var(--cloud-dim);">
+    <div class="receipt-row"><span>Passenger</span><span id="rc-passenger">—</span></div>
+    <div class="receipt-row"><span>Route</span><span id="rc-route">—</span></div>
+    <div class="receipt-row"><span>Flight / Date</span><span id="rc-flight">—</span></div>
+    <div class="receipt-row"><span>Passengers</span><span id="rc-pax">—</span></div>
+    <hr class="summary-divider" style="border-top-color: var(--cloud-dim);">
+    <div class="receipt-row"><span>Base fare</span><span id="rc-fare">—</span></div>
+    <div class="receipt-row"><span>Taxes &amp; fees</span><span id="rc-taxes">—</span></div>
+    <div class="receipt-row receipt-total"><span>Total paid</span><span id="rc-total">—</span></div>
+    <hr class="summary-divider" style="border-top-color: var(--cloud-dim);">
+    <div class="receipt-row"><span>Payment method</span><span id="rc-payment">Visa •••• 4242</span></div>
+    <div class="receipt-row"><span>Status</span><span style="color: var(--success); font-weight:600;">Paid</span></div>
+  </div>
+</div>
+
+<footer class="footer">
+  <div class="container">
+    <div>
+      <div class="footer-brand">SkyBook</div>
+      <small>Demo project — not a real booking service.</small>
+    </div>
+    <div><small>&copy; 2026 SkyBook · Built as a student project</small></div>
+  </div>
+</footer>
+
+<script src="script.js"></script>
+<script>
+  const state = getState();
+  const booking = state.lastBooking;
+
+  if (!booking) {
+    // No booking in state — send back to search rather than show an empty pass
+    window.location.href = "search.html";
+  } else {
+    document.getElementById("hero-name").textContent = booking.passengerFirst || "traveler";
+    document.getElementById("bp-airline").textContent = booking.airline;
+    document.getElementById("bp-pnr").textContent = booking.pnr;
+    document.getElementById("bp-from-city").textContent = booking.from;
+    document.getElementById("bp-from-code").textContent = AIRPORTS[booking.from] || booking.from;
+    document.getElementById("bp-to-city").textContent = booking.to;
+    document.getElementById("bp-to-code").textContent = AIRPORTS[booking.to] || booking.to;
+    document.getElementById("bp-passenger").textContent = `${booking.passengerFirst} ${booking.passengerLast}`;
+    document.getElementById("bp-flightno").textContent = booking.flightNo;
+    document.getElementById("bp-date").textContent = fmtDateLong(booking.date + "T00:00:00");
+    document.getElementById("bp-seat").textContent = booking.seat;
+    document.getElementById("bp-total").textContent = fmtMoney(booking.total);
+
+    const boardingTime = new Date(new Date(booking.depTime).getTime() - 40 * 60000);
+    document.getElementById("bp-boarding").textContent = fmtTime(boardingTime.toISOString());
+    document.getElementById("bp-gate").textContent = String.fromCharCode(65 + (booking.pnr.charCodeAt(0) % 6)) + (10 + (booking.pnr.charCodeAt(1) % 20));
+
+    // Fake barcode
+    const barcode = document.getElementById("bp-barcode");
+    for (let i = 0; i < 40; i++) {
+      const bar = document.createElement("div");
+      bar.style.height = `${20 + Math.floor(seededRandom(i + booking.pnr.length) * 22)}px`;
+      barcode.appendChild(bar);
+    }
+
+    // Payment receipt
+    const fareOnly = Math.round(booking.total / 1.12);
+    const taxesOnly = booking.total - fareOnly;
+    document.getElementById("rc-number").textContent = "RC-" + booking.pnr;
+    document.getElementById("rc-date").textContent = fmtDateLong(new Date().toISOString());
+    document.getElementById("rc-passenger").textContent = `${booking.passengerFirst} ${booking.passengerLast}`;
+    document.getElementById("rc-route").textContent = `${booking.from} \u2192 ${booking.to}`;
+    document.getElementById("rc-flight").textContent = `${booking.flightNo} \u00b7 ${fmtDateLong(booking.date + "T00:00:00")}`;
+    document.getElementById("rc-pax").textContent = booking.passengers;
+    document.getElementById("rc-fare").textContent = fmtMoney(fareOnly);
+    document.getElementById("rc-taxes").textContent = fmtMoney(taxesOnly);
+    document.getElementById("rc-total").textContent = fmtMoney(booking.total);
+  }
+
+  function printBoardingPass() {
+    document.body.classList.add("printing-pass");
+    window.print();
+  }
+
+  function printReceipt() {
+    document.body.classList.add("printing-receipt");
+    window.print();
+  }
+
+  window.addEventListener("afterprint", () => {
+    if (document.body.classList.contains("printing-pass")) {
+      document.body.classList.remove("printing-pass");
+      document.getElementById("print-confirm-msg").style.display = "block";
+      document.getElementById("print-confirm-msg-2").style.display = "none";
+      document.getElementById("print-receipt-btn").style.display = "inline-flex";
+    } else if (document.body.classList.contains("printing-receipt")) {
+      document.body.classList.remove("printing-receipt");
+      document.getElementById("print-confirm-msg-2").style.display = "block";
+      document.getElementById("print-confirm-msg").style.display = "none";
+    }
+  });
+</script>
+</body>
+</html>

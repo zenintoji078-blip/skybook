@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sign in — SkyBook</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<nav class="navbar">
+  <div class="container">
+    <a href="home.html" class="brand">
+      <svg class="mark" viewBox="0 0 32 32" fill="none"><path d="M4 20 L28 12 M28 12 L20 12 M28 12 L23 19" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      SkyBook
+    </a>
+    <div class="nav-links">
+      <a href="home.html">Home</a>
+      <a href="search.html">Flights</a>
+      <a href="booking.html">My booking</a>
+      <a href="login.html" data-auth-slot class="nav-cta active">Sign in</a>
+    </div>
+  </div>
+</nav>
+
+<div class="auth-shell">
+  <div class="auth-visual">
+    <div>
+      <span class="eyebrow">Welcome back</span>
+      <h1 style="color:#F5F3ED; font-size:2.2rem; margin-top:14px; max-width:380px;">Your next boarding pass is a login away.</h1>
+    </div>
+    <div class="ticket-stack">
+      <svg width="100%" height="140" viewBox="0 0 400 140" fill="none">
+        <rect x="10" y="30" width="360" height="90" rx="10" fill="#16294F" stroke="#C9A24B" stroke-opacity="0.4"/>
+        <rect x="30" y="0" width="360" height="90" rx="10" fill="#1E3565" stroke="#C9A24B" stroke-opacity="0.6"/>
+        <line x1="330" y1="10" x2="330" y2="80" stroke="#C9A24B" stroke-dasharray="4 4" stroke-opacity="0.6"/>
+        <circle cx="330" cy="10" r="6" fill="#0B1D3A"/>
+        <circle cx="330" cy="80" r="6" fill="#0B1D3A"/>
+        <text x="46" y="35" fill="#E0BB6B" font-family="IBM Plex Mono" font-size="13">MAA</text>
+        <text x="290" y="35" fill="#E0BB6B" font-family="IBM Plex Mono" font-size="13">SIN</text>
+        <text x="46" y="65" fill="#F5F3ED" font-family="Inter" font-size="11" opacity="0.7">Gate 14 · Seat 22A</text>
+      </svg>
+    </div>
+  </div>
+
+  <div class="auth-form-side">
+    <div class="auth-card">
+      <h1>Sign in</h1>
+      <p class="sub">Access your bookings, saved trips, and e-tickets.</p>
+
+      <div class="error-msg" id="error-msg">Enter a valid email and password (min 6 characters).</div>
+
+      <form id="login-form">
+        <div class="form-group">
+          <label for="email">Email address</label>
+          <input type="email" id="email" placeholder="you@example.com" required>
+        </div>
+        <div class="form-group">
+          <label for="password">Password</label>
+          <input type="password" id="password" placeholder="••••••••" required minlength="6">
+        </div>
+        <div class="form-foot">
+          <label style="display:flex; align-items:center; gap:6px; color:var(--slate-dark);">
+            <input type="checkbox" style="width:auto;"> Remember me
+          </label>
+          <a href="#">Forgot password?</a>
+        </div>
+        <button type="submit" class="btn btn-primary btn-block">Sign in</button>
+      </form>
+
+      <p class="switch-line">New to SkyBook? <a href="signup.html">Create an account</a></p>
+    </div>
+  </div>
+</div>
+
+<script src="script.js"></script>
+<script>
+  document.getElementById("login-form").addEventListener("submit", (e) => {
+    e.preventDefault();
+    const email = document.getElementById("email").value.trim();
+    const password = document.getElementById("password").value;
+    const errorBox = document.getElementById("error-msg");
+
+    if (!email.includes("@") || password.length < 6) {
+      errorBox.classList.add("show");
+      return;
+    }
+    errorBox.classList.remove("show");
+    fakeSignIn(email);
+
+    // Return to wherever the user was headed, default to booking flow
+    const redirect = new URLSearchParams(window.location.search).get("redirect");
+    window.location.href = redirect || "index.html";
+  });
+</script>
+</body>
+</html>

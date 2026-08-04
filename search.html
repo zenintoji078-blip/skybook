@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Flight results — SkyBook</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<nav class="navbar">
+  <div class="container">
+    <a href="home.html" class="brand">
+      <svg class="mark" viewBox="0 0 32 32" fill="none"><path d="M4 20 L28 12 M28 12 L20 12 M28 12 L23 19" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      SkyBook
+    </a>
+    <div class="nav-links">
+      <a href="home.html">Home</a>
+      <a href="search.html" class="active">Flights</a>
+      <a href="booking.html">My booking</a>
+      <a href="login.html" data-auth-slot class="nav-cta">Sign in</a>
+    </div>
+  </div>
+</nav>
+
+<header class="results-header">
+  <div class="container">
+    <div class="route-line">
+      <span id="route-from">MAA</span>
+      <svg viewBox="0 0 24 24" fill="none"><path d="M2 12 L22 12 M22 12 L16 6 M22 12 L16 18" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <span id="route-to">SIN</span>
+    </div>
+    <div class="results-meta" id="results-meta">Loading flights…</div>
+  </div>
+</header>
+
+<div class="container">
+  <div class="results-body">
+    <aside class="filters">
+      <h3>Refine results</h3>
+
+      <div class="filter-group">
+        <div class="fg-title">Stops</div>
+        <label class="filter-option"><input type="checkbox" class="stop-filter" value="0" checked> Nonstop</label>
+        <label class="filter-option"><input type="checkbox" class="stop-filter" value="1" checked> 1 stop</label>
+        <label class="filter-option"><input type="checkbox" class="stop-filter" value="2" checked> 2+ stops</label>
+      </div>
+
+      <div class="filter-group">
+        <div class="fg-title">Max price</div>
+        <input type="range" id="price-range" min="5000" max="60000" step="1000" value="60000" style="width:100%">
+        <div class="range-value" id="price-range-value">Up to ₹60,000</div>
+      </div>
+
+      <div class="filter-group">
+        <div class="fg-title">Departure time</div>
+        <label class="filter-option"><input type="checkbox" class="time-filter" value="morning" checked> Morning (5–12)</label>
+        <label class="filter-option"><input type="checkbox" class="time-filter" value="afternoon" checked> Afternoon (12–18)</label>
+        <label class="filter-option"><input type="checkbox" class="time-filter" value="evening" checked> Evening (18–24)</label>
+      </div>
+
+      <button type="button" id="reset-filters" class="btn btn-dark btn-block">Reset filters</button>
+    </aside>
+
+    <main>
+      <div class="sort-bar">
+        <div class="mono" id="result-count" style="font-size:0.85rem; color:var(--slate-dark);"></div>
+        <select id="sort-select">
+          <option value="price">Sort: Price (low to high)</option>
+          <option value="duration">Sort: Duration (shortest)</option>
+          <option value="departure">Sort: Departure (earliest)</option>
+        </select>
+      </div>
+
+      <div id="flight-list"></div>
+      <p id="empty-state" style="display:none; color:var(--slate-dark); padding:40px 0; text-align:center;">
+        No flights match those filters — try widening your search on the left.
+      </p>
+    </main>
+  </div>
+</div>
+
+<footer class="footer">
+  <div class="container">
+    <div>
+      <div class="footer-brand">SkyBook</div>
+      <small>Demo project — not a real booking service.</small>
+    </div>
+    <div><small>&copy; 2026 SkyBook · Built as a student project</small></div>
+  </div>
+</footer>
+
+<script src="script.js"></script>
+<script>
+  const params = new URLSearchParams(window.location.search);
+  const from = params.get("from") || "MAA";
+  const to = params.get("to") || "SIN";
+  const date = params.get("date") || new Date().toISOString().slice(0, 10);
+  const passengers = params.get("passengers") || "1";
+
+  document.getElementById("route-from").textContent = `${from} · ${AIRPORTS[from] || from}`;
+  document.getElementById("route-to").textContent = `${to} · ${AIRPORTS[to] || to}`;
+  document.getElementById("results-meta").textContent =
+    `${fmtDateLong(date + "T00:00:00")} · ${passengers} passenger${passengers > 1 ? "s" : ""}`;
+
+  const allFlights = generateFlights(from, to, date);
+
+  function getTimeBucket(iso) {
+    const h = new Date(iso).getHours();
+    if (h < 12) return "morning";
+    if (h < 18) return "afternoon";
+    return "evening";
+  }
+
+  function applyFilters() {
+    const activeStops = [...document.querySelectorAll(".stop-filter:checked")].map(el => parseInt(el.value));
+    const activeTimes = [...document.querySelectorAll(".time-filter:checked")].map(el => el.value);
+    const maxPrice = parseInt(document.getElementById("price-range").value);
+
+    return allFlights.filter(f => {
+      const stopBucket = f.stops >= 2 ? 2 : f.stops;
+      if (!activeStops.includes(stopBucket)) return false;
+      if (!activeTimes.includes(getTimeBucket(f.depTime))) return false;
+      if (f.price > maxPrice) return false;
+      return true;
+    });
+  }
+
+  function sortFlights(list) {
+    const mode = document.getElementById("sort-select").value;
+    const copy = [...list];
+    if (mode === "price") copy.sort((a, b) => a.price - b.price);
+    if (mode === "duration") copy.sort((a, b) => a.durationMin - b.durationMin);
+    if (mode === "departure") copy.sort((a, b) => new Date(a.depTime) - new Date(b.depTime));
+    return copy;
+  }
+
+  function stopsLabel(stops) {
+    if (stops === 0) return "Nonstop";
+    if (stops === 1) return "1 stop";
+    return `${stops} stops`;
+  }
+
+  function render() {
+    const filtered = sortFlights(applyFilters());
+    const list = document.getElementById("flight-list");
+    const empty = document.getElementById("empty-state");
+    document.getElementById("result-count").textContent = `${filtered.length} flight${filtered.length !== 1 ? "s" : ""} found`;
+
+    list.innerHTML = "";
+    if (filtered.length === 0) {
+      empty.style.display = "block";
+      return;
+    }
+    empty.style.display = "none";
+
+    filtered.forEach(f => {
+      const card = document.createElement("a");
+      card.href = `booking.html?fid=${encodeURIComponent(f.id)}&from=${from}&to=${to}&date=${date}&passengers=${passengers}`;
+      card.className = "flight-card";
+      card.innerHTML = `
+        <span class="hole top"></span><span class="hole bottom"></span>
+        <div class="flight-main">
+          <div class="flight-airline"><span class="dot"></span>${f.airline} · ${f.flightNo}</div>
+          <div class="flight-times">
+            <div><div class="time">${fmtTime(f.depTime)}</div><div class="airport">${from}</div></div>
+            <div class="flight-path-mini"><div class="duration">${fmtDuration(f.durationMin)}</div></div>
+            <div><div class="time">${fmtTime(f.arrTime)}</div><div class="airport">${to}</div></div>
+          </div>
+          <div class="flight-stops">${stopsLabel(f.stops)}</div>
+        </div>
+        <div class="flight-price-panel">
+          <div>
+            <div class="price">${fmtMoney(f.price)}</div>
+            <div class="price-sub">per passenger</div>
+          </div>
+          <span class="btn btn-primary" style="pointer-events:none; padding:9px 20px; font-size:0.82rem;">Select</span>
+        </div>
+      `;
+      list.appendChild(card);
+    });
+  }
+
+  document.querySelectorAll(".stop-filter, .time-filter").forEach(el => el.addEventListener("change", render));
+  document.getElementById("price-range").addEventListener("input", (e) => {
+    document.getElementById("price-range-value").textContent = `Up to ₹${parseInt(e.target.value).toLocaleString("en-IN")}`;
+    render();
+  });
+  document.getElementById("sort-select").addEventListener("change", render);
+  document.getElementById("reset-filters").addEventListener("click", () => {
+    document.querySelectorAll(".stop-filter, .time-filter").forEach(el => el.checked = true);
+    document.getElementById("price-range").value = 60000;
+    document.getElementById("price-range-value").textContent = "Up to ₹60,000";
+    render();
+  });
+
+  render();
+</script>
+</body>
+</html>

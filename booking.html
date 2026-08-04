@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Complete your booking — SkyBook</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<nav class="navbar">
+  <div class="container">
+    <a href="home.html" class="brand">
+      <svg class="mark" viewBox="0 0 32 32" fill="none"><path d="M4 20 L28 12 M28 12 L20 12 M28 12 L23 19" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      SkyBook
+    </a>
+    <div class="nav-links">
+      <a href="home.html">Home</a>
+      <a href="search.html">Flights</a>
+      <a href="booking.html" class="active">My booking</a>
+      <a href="login.html" data-auth-slot class="nav-cta">Sign in</a>
+    </div>
+  </div>
+</nav>
+
+<div class="container">
+  <div class="steps-bar">
+    <div class="step done">1 · Search</div>
+    <div class="step active">2 · Seat &amp; details</div>
+    <div class="step">3 · Confirmation</div>
+  </div>
+
+  <div class="booking-layout">
+    <div>
+      <div class="panel">
+        <h3>Choose your seat</h3>
+        <div class="seat-map" id="seat-map"></div>
+        <div class="seat-legend">
+          <span><span class="legend-chip" style="background:var(--cloud-dim)"></span>Available</span>
+          <span><span class="legend-chip" style="background:var(--gold)"></span>Selected</span>
+          <span><span class="legend-chip" style="background:var(--slate); opacity:.5"></span>Taken</span>
+        </div>
+      </div>
+
+      <div class="panel">
+        <h3>Passenger details</h3>
+        <form id="passenger-form">
+          <div class="form-row">
+            <div class="form-group">
+              <label for="p-first">First name</label>
+              <input type="text" id="p-first" required>
+            </div>
+            <div class="form-group">
+              <label for="p-last">Last name</label>
+              <input type="text" id="p-last" required>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="p-email">Email</label>
+              <input type="email" id="p-email" required>
+            </div>
+            <div class="form-group">
+              <label for="p-phone">Phone</label>
+              <input type="tel" id="p-phone" required>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="p-dob">Date of birth</label>
+              <input type="date" id="p-dob" required>
+            </div>
+            <div class="form-group">
+              <label for="p-meal">Meal preference</label>
+              <select id="p-meal">
+                <option>Standard</option>
+                <option>Vegetarian</option>
+                <option>Vegan</option>
+                <option>Gluten-free</option>
+              </select>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <aside class="summary-card">
+      <div class="route" id="sum-route">— · —</div>
+      <div class="sub-route" id="sum-flightno">—</div>
+      <hr class="summary-divider">
+      <div class="summary-row"><span>Date</span><span id="sum-date">—</span></div>
+      <div class="summary-row"><span>Departs</span><span id="sum-dep">—</span></div>
+      <div class="summary-row"><span>Arrives</span><span id="sum-arr">—</span></div>
+      <div class="summary-row"><span>Passengers</span><span id="sum-pax">—</span></div>
+      <div class="summary-row"><span>Seat</span><span id="sum-seat">Not selected</span></div>
+      <hr class="summary-divider">
+      <div class="summary-row"><span>Fare</span><span id="sum-fare">₹0</span></div>
+      <div class="summary-row"><span>Taxes &amp; fees</span><span id="sum-taxes">₹0</span></div>
+      <div class="summary-total"><span>Total</span><span class="amount" id="sum-total">₹0</span></div>
+      <button type="button" id="confirm-btn" class="btn btn-primary btn-block" style="margin-top:22px;" disabled>Confirm &amp; pay</button>
+      <p style="font-size:0.72rem; color:var(--slate); margin-top:12px; text-align:center;">Select a seat and fill in passenger details to continue.</p>
+    </aside>
+  </div>
+</div>
+
+<footer class="footer">
+  <div class="container">
+    <div>
+      <div class="footer-brand">SkyBook</div>
+      <small>Demo project — not a real booking service.</small>
+    </div>
+    <div><small>&copy; 2026 SkyBook · Built as a student project</small></div>
+  </div>
+</footer>
+
+<script src="script.js"></script>
+<script>
+  const params = new URLSearchParams(window.location.search);
+  const fid = params.get("fid");
+  const from = params.get("from") || "MAA";
+  const to = params.get("to") || "SIN";
+  const date = params.get("date") || new Date().toISOString().slice(0, 10);
+  const passengers = parseInt(params.get("passengers") || "1");
+
+  const flights = generateFlights(from, to, date);
+  const flight = flights.find(f => f.id === fid) || flights[0];
+
+  document.getElementById("sum-route").textContent = `${from} → ${to}`;
+  document.getElementById("sum-flightno").textContent = `${flight.airline} · ${flight.flightNo}`;
+  document.getElementById("sum-date").textContent = fmtDateLong(date + "T00:00:00");
+  document.getElementById("sum-dep").textContent = `${fmtTime(flight.depTime)} ${from}`;
+  document.getElementById("sum-arr").textContent = `${fmtTime(flight.arrTime)} ${to}`;
+  document.getElementById("sum-pax").textContent = passengers;
+
+  const fare = flight.price * passengers;
+  const taxes = Math.round(fare * 0.12);
+  document.getElementById("sum-fare").textContent = fmtMoney(fare);
+  document.getElementById("sum-taxes").textContent = fmtMoney(taxes);
+  document.getElementById("sum-total").textContent = fmtMoney(fare + taxes);
+
+  // ---- Seat map ----
+  const seatMap = document.getElementById("seat-map");
+  const rows = 6;
+  const cols = ["A", "B", "C", "", "D", "E", "F"];
+  const seedTaken = (from + to).split("").reduce((a, c) => a + c.charCodeAt(0), 0);
+  let selectedSeat = null;
+
+  for (let r = 1; r <= rows; r++) {
+    cols.forEach((c, ci) => {
+      if (c === "") {
+        const gap = document.createElement("div");
+        gap.className = "seat aisle-gap";
+        seatMap.appendChild(gap);
+        return;
+      }
+      const seatId = `${r}${c}`;
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "seat";
+      btn.textContent = seatId;
+      const isTaken = seededRandom(seedTaken + r * 7 + ci) < 0.22;
+      if (isTaken) btn.classList.add("taken");
+      btn.addEventListener("click", () => {
+        if (btn.classList.contains("taken")) return;
+        document.querySelectorAll(".seat.selected").forEach(s => s.classList.remove("selected"));
+        btn.classList.add("selected");
+        selectedSeat = seatId;
+        document.getElementById("sum-seat").textContent = seatId;
+        checkReady();
+      });
+      seatMap.appendChild(btn);
+    });
+  }
+
+  // ---- Form validation gate ----
+  const form = document.getElementById("passenger-form");
+  const confirmBtn = document.getElementById("confirm-btn");
+
+  function checkReady() {
+    confirmBtn.disabled = !(selectedSeat && form.checkValidity());
+  }
+  form.addEventListener("input", checkReady);
+
+  confirmBtn.addEventListener("click", () => {
+    if (!selectedSeat || !form.checkValidity()) {
+      form.reportValidity();
+      return;
+    }
+    const booking = {
+      pnr: pnr(),
+      airline: flight.airline,
+      flightNo: flight.flightNo,
+      from, to, date,
+      depTime: flight.depTime,
+      arrTime: flight.arrTime,
+      seat: selectedSeat,
+      passengerFirst: document.getElementById("p-first").value,
+      passengerLast: document.getElementById("p-last").value,
+      email: document.getElementById("p-email").value,
+      passengers,
+      total: fare + taxes
+    };
+    setState({ lastBooking: booking });
+    window.location.href = "confirmation.html";
+  });
+</script>
+</body>
+</html>
